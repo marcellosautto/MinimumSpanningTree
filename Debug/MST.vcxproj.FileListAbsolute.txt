@@ -1,0 +1,2 @@
+D:\VS_Projects\MST\Debug\MST.exe
+D:\VS_Projects\MST\Debug\MST.pdb
