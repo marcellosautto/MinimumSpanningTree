@@ -2,34 +2,33 @@
 
 MST::MST()
 {
+	parents.resize(graph->V+1);
 }
 
 bool MST::run()
 {
+	
 	initializeMST();
-	//printMST();
 	sortMST();
-	printMST();
 	kruskalsAlg();
+	printGraph();
 	printMST();
-	printSG();
+
 
 	return false;
 }
 
-void MST::initializeMST()
+void MST::initializeMST() //initialize graph with txt file
 {
 	ifstream inFile("data.txt");
 
+	int i = 0;
 	while (!inFile.eof())
 	{
-		Edge edge;
-		inFile >> edge.startVertex;
-		inFile >> edge.endVertex;
-		inFile >> edge.weight;
-
-		minimumSpanningTree.emplace_back(edge);
-
+		inFile >> graph->edge[i].startVertex;
+		inFile >> graph->edge[i].endVertex;
+		inFile >> graph->edge[i].weight;
+		i++;
 	}
 }
 
@@ -38,65 +37,81 @@ void MST::sortMST()
 	/* Function to sort an array using insertion sort*/
 
 	int i, j;
-	for (i = 1; i < minimumSpanningTree.size(); i++)
+	for (i = 1; i < graph->E; i++)
 	{
-		Edge key = minimumSpanningTree[i];
+		Edge key = graph->edge[i];
 		j = i - 1;
 
 		/* Move elements of arr[0..i-1], that are
 		greater than key, to one position ahead
 		of their current position */
-		while (j >= 0 && minimumSpanningTree[j].weight > key.weight) //sort by weight
+		while (j >= 0 && graph->edge[j].weight > key.weight) //sort by weight
 		{
-			minimumSpanningTree[j + 1] = minimumSpanningTree[j];
+			graph->edge[j + 1] = graph->edge[j];
 			j = j - 1;
 		}
-		minimumSpanningTree[j + 1] = key;
+		graph->edge[j + 1] = key;
 	}
 }
 
-void MST::printMST()
+void MST::printGraph()
 {
-	for (int i = 0; i < minimumSpanningTree.size(); i++)
+	cout << "Original Graph\n";
+	cout << "--------------\n";
+	for (int i = 0; i < graph->E; i++)
 	{
-		cout << minimumSpanningTree[i].startVertex+1 << " " << minimumSpanningTree[i].endVertex+1 << " " << minimumSpanningTree[i].weight << endl;
+		cout << graph->edge[i].startVertex << " " << graph->edge[i].endVertex << " " << graph->edge[i].weight << endl;
+	}
+	cout << endl;
+}
+
+
+int MST::find(int x)
+{
+	if (parents[x] == x)
+	{
+		return x;
 	}
 
-	cout << "------------------------------" << endl << endl;
+	return find(parents[x]);
+}
+
+void MST::unite(int x, int y)
+{
+	int px = find(x);
+	int py = find(y);
+	parents[px] = py;
 }
 
 void MST::kruskalsAlg()
 {
-	
-	for (int i = 0; i < minimumSpanningTree.size(); i++)
+	for (int i = 0; i < graph->V; i++)
 	{
-		bool cycles = false;
-		for (int j = 0; j < subGraph.size(); j++)
-		{
-			if (minimumSpanningTree[i].endVertex == subGraph[j].startVertex || minimumSpanningTree[i].endVertex == subGraph[j].endVertex) //if this vertex forms a cycle, ignore it
-			{
-				cycles = true;
-			}
-				
-		}
+		parents[i] = i;
+	}
 
-		if (cycles == false) //if the vertex doesnt cycle, add it to the subgraph
-			subGraph.emplace_back(minimumSpanningTree[i]);
-	
+	for (int i = 0; i < graph->E; i++)
+	{
+		if (find(graph->edge[i].startVertex) != find(graph->edge[i].endVertex)) //if the edge does not form a cycle, add it to the minimum spanning tree
+		{
+			minimumSpanningTree.emplace_back(graph->edge[i]);
+			unite(graph->edge[i].startVertex, graph->edge[i].endVertex);
+		}
 	}
 }
 
-void MST::printSG()
+void MST::printMST() //print original graph then minimum spanning tree
 {
-	
+	cout << "Minimum Spanning Tree\n";
+	cout << "---------------------\n";
 	int totalWeight = 0;
-	for (int i = 0; i < subGraph.size(); i++)
+	for (int i = 0; i < minimumSpanningTree.size(); i++)
 	{
-		cout << subGraph[i].startVertex+1 << " - " << subGraph[i].endVertex+1 << " = " << subGraph[i].weight << endl;
-		totalWeight += subGraph[i].weight;
+		cout << minimumSpanningTree[i].startVertex << " - " << minimumSpanningTree[i].endVertex << " = " << minimumSpanningTree[i].weight << endl;
+		totalWeight += minimumSpanningTree[i].weight;
 	}
 
-	cout << "------------------------------" << endl << endl;
+	cout << "---------------------\n\n";
 
 	cout << "Total Weight = " << totalWeight << endl;
 }

@@ -1,7 +1,5 @@
 ﻿  MST.cpp
-D:\VS_Projects\MST\MST.cpp(41,16): warning C4018: '<': signed/unsigned mismatch
-D:\VS_Projects\MST\MST.cpp(60,20): warning C4018: '<': signed/unsigned mismatch
-D:\VS_Projects\MST\MST.cpp(71,20): warning C4018: '<': signed/unsigned mismatch
-D:\VS_Projects\MST\MST.cpp(74,21): warning C4018: '<': signed/unsigned mismatch
-D:\VS_Projects\MST\MST.cpp(93,20): warning C4018: '<': signed/unsigned mismatch
+D:\VS_Projects\MST\MST.cpp(108,20): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+  Generating Code...
   MST.vcxproj -> D:\VS_Projects\MST\Debug\MST.exe
